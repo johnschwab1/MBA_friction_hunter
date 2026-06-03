@@ -27,21 +27,25 @@ for _k in ["ANTHROPIC_API_KEY", "ANTHROPIC_MODEL", "GEMINI_API_KEY", "GEMINI_MOD
 
 from llm_client import call_llm, provider_label  # noqa: E402
 
-# ── Page config ──
 st.set_page_config(page_title="MBA Friction Hunter", page_icon="🎓", layout="wide", initial_sidebar_state="collapsed")
 
-# ── Constants ──
 REPO_ROOT = Path(__file__).parent
-STAGE_NAMES = {2: "Friction Hunter", 3: "Use Case Selector", 4: "Architecture Hunter", 5: "Design Brief", 6: "Prototype"}
+STAGE_NAMES = {
+    2: "Friction Hunter", 3: "Use Case Selector", 4: "Architecture Hunter",
+    5: "Design Brief", 6: "Prototype", 7: "Professor Brief", 8: "Reference Document"
+}
 STAGE_FILES = {
     2: "stage_2_friction_hunter.md", 3: "stage_3_use_case_selector.md",
     4: "stage_4_architecture_hunter.md", 5: "stage_5_design_brief_generator.md",
     6: "stage_6_prototype_generator.md",
+    7: "stage_7_professor_brief.md", 8: "stage_8_reference_doc.md",
 }
-STAGE_SLUGS = {2: "friction_hunter", 3: "use_case_selector", 4: "architecture_hunter", 5: "design_brief", 6: "prototype"}
+STAGE_SLUGS = {
+    2: "friction_hunter", 3: "use_case_selector", 4: "architecture_hunter",
+    5: "design_brief", 6: "prototype", 7: "professor_brief", 8: "reference_document"
+}
 SEARCH_STAGES = {4}
 
-# Phrases that indicate the LLM couldn't retrieve a real syllabus
 _FAIL_PHRASES = [
     "i notice that", "i cannot", "i'm unable", "i am unable",
     "unable to find", "unable to access", "unable to retrieve",
@@ -55,27 +59,21 @@ _FAIL_PHRASES = [
 
 
 def _looks_like_syllabus(text: str) -> bool:
-    """Heuristic: real syllabi are long and don't open with a failure message."""
     if len(text) < 500:
         return False
     preview = text[:600].lower()
     return not any(phrase in preview for phrase in _FAIL_PHRASES)
 
 
-# ── Session state defaults ──
 for _k, _v in {
     "syllabus": "", "outputs": {}, "stage": 0,
     "search_results": "", "search_fetched": False, "search_valid": None,
-    "stage3_direction": "",
-    "stage3_examples": "",
-    "profile_mode": False,
-    "profile_result": "",
+    "stage3_direction": "", "stage3_examples": "",
+    "profile_mode": False, "profile_result": "",
 }.items():
     if _k not in st.session_state:
         st.session_state[_k] = _v
 
-
-# ── Helpers ──
 
 def extract_system_prompt(filename: str) -> str:
     text = (REPO_ROOT / filename).read_text()
@@ -112,6 +110,49 @@ def parse_uploaded_file(f) -> str:
     return f.read().decode("utf-8", errors="replace")
 
 
+def _add_runs_with_bold(paragraph, text: str):
+    parts = text.split("**")
+    for i, part in enumerate(parts):
+        if part:
+            run = paragraph.add_run(part)
+            run.bold = (i % 2 == 1)
+
+
+def _add_markdown_to_doc(doc, text: str):
+    for line in text.split("\n"):
+        s = line.rstrip()
+        if s.startswith("### "):
+            doc.add_heading(s[4:], level=3)
+        elif s.startswith("## "):
+            doc.add_heading(s[3:], level=2)
+        elif s.startswith("# "):
+            doc.add_heading(s[2:], level=1)
+        elif s.startswith("- ") or s.startswith("* "):
+            p = doc.add_paragraph(style="List Bullet")
+            _add_runs_with_bold(p, s[2:])
+        elif re.match(r"^\d+\. ", s):
+            p = doc.add_paragraph(style="List Number")
+            _add_runs_with_bold(p, re.sub(r"^\d+\. ", "", s))
+        elif s == "---":
+            doc.add_paragraph("─" * 60)
+        elif s == "":
+            pass
+        else:
+            p = doc.add_paragraph()
+            _add_runs_with_bold(p, s)
+
+
+def generate_report_docx(professor_brief: str, reference_doc: str) -> bytes:
+    from docx import Document
+    doc = Document()
+    _add_markdown_to_doc(doc, professor_brief)
+    doc.add_page_break()
+    _add_markdown_to_doc(doc, reference_doc)
+    buf = io.BytesIO()
+    doc.save(buf)
+    return buf.getvalue()
+
+
 def reset():
     for k, v in {
         "syllabus": "", "outputs": {}, "stage": 0,
@@ -124,7 +165,6 @@ def reset():
 
 
 def reset_search():
-    """Clear only the search/fetch state so the user can try a new query."""
     st.session_state.search_results = ""
     st.session_state.search_fetched = False
     st.session_state.search_valid = None
@@ -155,7 +195,6 @@ if st.session_state.stage == 0:
     with tab_search:
         st.caption("Search for a publicly available syllabus. You'll see a list of options before we fetch the full text.")
 
-        # ── Profile-builder mode ──
         if st.session_state.profile_mode:
             st.info(
                 "**Building a course profile from public information.**\n\n"
@@ -204,7 +243,6 @@ if st.session_state.stage == 0:
                     st.session_state.stage = 2
                     st.rerun()
 
-        # ── Normal search mode ──
         else:
             q_col, btn_col = st.columns([4, 1])
             with q_col:
@@ -225,7 +263,6 @@ if st.session_state.stage == 0:
                 st.markdown(st.session_state.search_results)
                 st.divider()
 
-                # ── Fetch failed — show recovery options ──
                 if st.session_state.search_fetched and st.session_state.search_valid is False:
                     st.warning(
                         "**No public syllabus found.**\n\n"
@@ -250,7 +287,6 @@ if st.session_state.stage == 0:
                         st.markdown("**Option 3: Manual input**")
                         st.caption("Switch to the Upload or Paste tab above.")
 
-                # ── Fetch not yet done ──
                 elif not st.session_state.search_fetched:
                     pick_col, fetch_col = st.columns([1, 3])
                     with pick_col:
@@ -271,7 +307,6 @@ if st.session_state.stage == 0:
                             st.session_state.search_valid = _looks_like_syllabus(fetched)
                             st.rerun()
 
-                # ── Fetch succeeded ──
                 elif st.session_state.search_valid:
                     st.success(f"✓ Fetched {len(st.session_state.syllabus):,} chars")
                     with st.expander("Preview fetched syllabus"):
@@ -313,7 +348,7 @@ if st.session_state.stage == 0:
 
 
 # ═══════════════════════════════════════════
-# PIPELINE (stages 2–6)
+# PIPELINE (stages 2–8)
 # ═══════════════════════════════════════════
 
 elif st.session_state.stage >= 2:
@@ -322,7 +357,6 @@ elif st.session_state.stage >= 2:
     if st.button("↩ New syllabus"):
         reset()
 
-    # Completed stages (collapsed)
     for s in range(2, st.session_state.stage):
         if s in st.session_state.outputs:
             with st.expander(f"✅ Stage {s}: {STAGE_NAMES[s]}", expanded=False):
@@ -334,10 +368,14 @@ elif st.session_state.stage >= 2:
 
     active = st.session_state.stage
 
-    if active <= 6:
+    if active <= 8:
         st.subheader(f"Stage {active}: {STAGE_NAMES[active]}")
         if active == 4:
             st.caption("🔍 Web search active — finding current research and frameworks")
+        if active == 7:
+            st.caption("📄 Generating Professor Brief — the leave-behind document for professors")
+        if active == 8:
+            st.caption("📋 Assembling Reference Document — your internal working document")
 
         # ── Stage not yet run ──
         if active not in st.session_state.outputs:
@@ -354,6 +392,14 @@ elif st.session_state.stage >= 2:
                 elif active == 5 and 3 in st.session_state.outputs and 4 in st.session_state.outputs:
                     user_msg = (f"PRIORITIZED USE CASES (Stage 3):\n\n{st.session_state.outputs[3]}\n\n---\n\n"
                                 f"ARCHITECTURE RECOMMENDATIONS (Stage 4):\n\n{st.session_state.outputs[4]}")
+                elif active in (7, 8):
+                    user_msg = (
+                        f"FRICTION MAP (Stage 2):\n\n{st.session_state.outputs.get(2, '')}\n\n---\n\n"
+                        f"USE CASES (Stage 3):\n\n{st.session_state.outputs.get(3, '')}\n\n---\n\n"
+                        f"ARCHITECTURE RESEARCH (Stage 4):\n\n{st.session_state.outputs.get(4, '')}\n\n---\n\n"
+                        f"DESIGN BRIEF (Stage 5):\n\n{st.session_state.outputs.get(5, '')}\n\n---\n\n"
+                        f"PROTOTYPE PROMPT (Stage 6):\n\n{st.session_state.outputs.get(6, '')}"
+                    )
                 else:
                     user_msg = st.session_state.outputs.get(active - 1, st.session_state.syllabus)
 
@@ -367,7 +413,7 @@ elif st.session_state.stage >= 2:
             st.markdown(st.session_state.outputs[active])
             st.divider()
 
-            # — Stage 3: approval loop with context-aware guidance —
+            # — Stage 3: approval loop —
             if active == 3:
                 if not st.session_state.stage3_examples:
                     with st.spinner("Generating guidance suggestions…"):
@@ -396,7 +442,7 @@ elif st.session_state.stage >= 2:
                 with col1:
                     if st.button("↺ Re-run with this direction", disabled=not direction_input.strip()):
                         st.session_state.stage3_direction = direction_input.strip()
-                        st.session_state.stage3_examples = ""  # clear cache for new run
+                        st.session_state.stage3_examples = ""
                         del st.session_state.outputs[3]
                         st.rerun()
                 with col2:
@@ -408,7 +454,54 @@ elif st.session_state.stage >= 2:
                     st.download_button(label="Download use cases .md", data=st.session_state.outputs[3],
                         file_name="stage_03_use_case_selector.md", mime="text/markdown", key="dl_stage3")
 
-            # — Generic handling for all other stages —
+            # — Stage 8: pipeline complete, show report downloads —
+            elif active == 8:
+                st.success("🏁 Pipeline complete!")
+                st.subheader("📥 Download Report")
+
+                if 7 in st.session_state.outputs:
+                    docx_bytes = generate_report_docx(
+                        st.session_state.outputs[7],
+                        st.session_state.outputs[8]
+                    )
+                    dl1, dl2, dl3 = st.columns(3)
+                    with dl1:
+                        st.download_button(
+                            label="📄 Full Report (.docx)",
+                            data=docx_bytes,
+                            file_name="mba_friction_hunter_report.docx",
+                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            type="primary"
+                        )
+                    with dl2:
+                        st.download_button(
+                            label="Professor Brief (.md)",
+                            data=st.session_state.outputs[7],
+                            file_name="professor_brief.md",
+                            mime="text/markdown"
+                        )
+                    with dl3:
+                        st.download_button(
+                            label="Reference Doc (.md)",
+                            data=st.session_state.outputs[8],
+                            file_name="reference_document.md",
+                            mime="text/markdown"
+                        )
+                    st.caption("💡 To open in Google Docs: upload the .docx to Google Drive, then right-click → Open with Google Docs.")
+
+                st.divider()
+                st.subheader("All Stage Outputs")
+                for s in range(2, 9):
+                    if s in st.session_state.outputs:
+                        st.download_button(
+                            label=f"Stage {s}: {STAGE_NAMES[s]}",
+                            data=st.session_state.outputs[s],
+                            file_name=f"stage_{s:02d}_{STAGE_SLUGS[s]}.md",
+                            mime="text/markdown",
+                            key=f"dl_final_{s}"
+                        )
+
+            # — All other stages —
             else:
                 action_col, dl_col, _ = st.columns([2, 2, 3])
                 with action_col:
@@ -420,15 +513,7 @@ elif st.session_state.stage >= 2:
                         file_name=f"stage_{active:02d}_{STAGE_SLUGS[active]}.md", mime="text/markdown",
                         key=f"dl_active_{active}")
 
-                if active < 6:
+                if active < 8:
                     if st.button(f"Continue to Stage {active + 1} →", type="primary"):
                         st.session_state.stage += 1
                         st.rerun()
-                else:
-                    st.success("🏁 Pipeline complete!")
-                    st.subheader("Download all outputs")
-                    for s in range(2, 7):
-                        if s in st.session_state.outputs:
-                            st.download_button(label=f"Stage {s}: {STAGE_NAMES[s]}", data=st.session_state.outputs[s],
-                                file_name=f"stage_{s:02d}_{STAGE_SLUGS[s]}.md", mime="text/markdown",
-                                key=f"dl_final_{s}")
