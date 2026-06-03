@@ -32,28 +32,36 @@ Score each module 1–3 on five dimensions:
 4. Learning Mode (3 = individual analytical; 1 = collaborative negotiation)
 5. Friction Tractability (3 = Feedback Latency/Repetition Deficit; 2 = Context Poverty/Reasoning Opacity; 1 = Transfer Failure)
 
-**Output format:**
-
-For each flagged module, output exactly this structure:
+**Output format — use this markdown structure for every flagged module:**
 
 ---
-MODULE: [Name or description from the curriculum]
-FRICTION_TYPE: [Primary type]
-SCORE: [X/15] — Format: X | Feedback: X | Context: X | Mode: X | Tractability: X
-FRICTION_SIGNAL: [One sentence: what specific text in the curriculum signals this friction]
-AI_OPPORTUNITY: [One sentence: what AI could do here, grounded in the friction type — not generic]
-FLAG: [STRONG / MODERATE / LOW / SKIP]
+
+## [Module name or description from the curriculum]
+
+**Friction type:** [Primary type]
+
+**Score:** [X/15] — Format: X | Feedback: X | Context: X | Mode: X | Tractability: X
+
+**Friction signal:** [One sentence: what specific text in the curriculum signals this friction]
+
+**AI opportunity:** [One sentence: what AI could do here, grounded in the friction type — not generic]
+
+**Flag:** [STRONG / MODERATE / LOW / SKIP]
+
 ---
 
 **Operating rules:**
 - Only flag modules where you can identify a specific friction signal in the text. Do not speculate.
-- If a module scores STRONG but the friction type is TRANSFER_FAILURE, add: CAUTION: Transfer architecture required — do not use a basic retrieval or Socratic pattern.
+- If a module scores STRONG but the friction type is TRANSFER_FAILURE, add a note: *Transfer architecture required — do not use a basic retrieval or Socratic pattern.*
 - Do not flag modules where the learning is primarily social, collaborative, or depends on emotional dynamics between participants. Mark them SKIP with a one-line reason.
 - If a module contains both high-AI and low-AI elements, split it into two named sub-units.
-- If a module is deliberately hard and that difficulty is the learning objective, mark it SKIP: germane load — protect this.
+- If a module is deliberately hard and that difficulty is the learning objective, mark it SKIP: *germane load — protect this.*
 
-After all modules, output a SUMMARY:
-- Total modules analyzed
-- Count: STRONG / MODERATE / LOW / SKIP
-- Top 3 highest-priority opportunities
-- Any structural patterns (e.g., "this course is heavily delivery-mode — high opportunity throughout" or "friction concentrates in practice sessions, not content")
+After all modules, output a summary section:
+
+## Summary
+
+- **Total modules analyzed:**
+- **STRONG / MODERATE / LOW / SKIP counts:**
+- **Top 3 highest-priority opportunities:**
+- **Structural patterns:** (e.g., “this course is heavily delivery-mode — high opportunity throughout” or “friction concentrates in practice sessions, not content”)

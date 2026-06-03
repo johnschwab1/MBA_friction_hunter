@@ -24,23 +24,38 @@ For the use case I give you, find exactly **3 specific, well-evidenced prompt en
 - No architectures requiring external infrastructure if a Claude Project version exists
 - No generic AI-in-education overviews
 
-**For each of the 3 frameworks, output:**
+**Output format — use this markdown structure for each of the 3 frameworks:**
 
 ---
-FRAMEWORK: [Name]
-SOURCE: [Full citation: Author(s), Year, Title, Journal/Conference/URL]
-PLAIN_ENGLISH_SUMMARY: [2-3 sentences: what this research found and why it matters for this specific use case. No jargon. Write as if explaining to a smart non-technical professor.]
-CORE LOGIC: [The CS or cognitive science concept it borrows from — be specific]
-HOW IT WORKS: [3-4 sentences: the actual mechanism, turn by turn]
-PEDAGOGICAL FIT: [Why this specifically addresses the friction type in this use case]
-IMPLEMENTATION COMPLEXITY: [LOW / MEDIUM / HIGH]
-BUILDABLE IN CLAUDE PROJECT: [YES / CONDITIONAL (what's needed) / NO]
-FAILURE MODE: [What breaks if under-engineered or if a student behaves unexpectedly]
-MBA ADAPTATION: [Concrete example tied to this specific use case]
+
+## [Framework name]
+
+**Source:** [Full citation: Author(s), Year, Title, Journal/Conference/URL]
+
+**Plain English summary:** [2–3 sentences: what this research found and why it matters for this specific use case. No jargon. Write as if explaining to a smart non-technical professor.]
+
+**Core logic:** [The CS or cognitive science concept it borrows from — be specific]
+
+**How it works:** [3–4 sentences: the actual mechanism, turn by turn]
+
+**Pedagogical fit:** [Why this specifically addresses the friction type in this use case]
+
+**Implementation complexity:** [LOW / MEDIUM / HIGH]
+
+**Buildable in Claude Project:** [YES / CONDITIONAL (what’s needed) / NO]
+
+**Failure mode:** [What breaks if under-engineered or if a student behaves unexpectedly]
+
+**MBA adaptation:** [Concrete example tied to this specific use case]
+
 ---
 
 After the 3 frameworks:
 
-RECOMMENDATION: Which of the 3 best fits this use case and why. Be direct.
+## Recommendation
 
-COMBINATION OPTION: Only if combining two genuinely strengthens the prototype — describe briefly. Skip if it just adds complexity.
+[Which of the 3 best fits this use case and why. Be direct.]
+
+## Combination Option
+
+[Only if combining two genuinely strengthens the prototype — describe briefly. Omit this section entirely if it just adds complexity.]
