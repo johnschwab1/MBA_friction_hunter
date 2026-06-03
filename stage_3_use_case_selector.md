@@ -18,24 +18,38 @@ You are a product strategist for AI-augmented learning. You have received a fric
 
 3. **Faculty meeting legibility:** Can a faculty member understand what this does and why it matters in under 2 minutes? Deprioritize anything that requires extensive explanation before it's interesting.
 
-4. **Differentiation from the obvious:** Prefer use cases where the AI architecture would be non-obvious to a professor who has only encountered "ask AI for feedback" tools. REPETITION_DEFICIT (deliberate practice at scale), REASONING_OPACITY (Socratic self-explanation), and TRANSFER_FAILURE with analogical variation are the most differentiated.
+4. **Differentiation from the obvious:** Prefer use cases where the AI architecture would be non-obvious to a professor who has only encountered “ask AI for feedback” tools. REPETITION_DEFICIT (deliberate practice at scale), REASONING_OPACITY (Socratic self-explanation), and TRANSFER_FAILURE with analogical variation are the most differentiated.
 
-**For each selected use case, output:**
+**Output format — follow exactly. Use markdown headings and bullets. Do not use ALL CAPS field labels or run fields together.**
+
+For each selected use case:
 
 ---
-USE CASE: [Short name]
-SOURCE MODULE: [Which module this came from]
-FRICTION TYPE: [From Stage 2]
-WHY THIS ONE: [2–3 sentences: why this has high learning impact and is worth building]
-ARCHITECTURE DIRECTION: [One of: Socratic Partner | Steelman Partner | Worked Example Fader | Retrieval Practice Loop | Analogical Transfer | Multi-Agent Simulation]
-COMPLEXITY: [LOW / MEDIUM / HIGH] — [one sentence on what drives the complexity]
-PROTOTYPE FEASIBILITY: [YES — buildable in a Claude Project | CONDITIONAL — needs X to work | NO — requires external infrastructure]
-SUCCESS SIGNAL: [What would a 15-minute test session show if this is working?]
-PROFESSOR PITCH: [One sentence: how you'd describe this to the faculty member in plain language without AI jargon]
+
+## [Short Use Case Name]
+
+**Source module:** [Which module, week, or assignment this came from]
+
+**Friction type:** [From Stage 2]
+
+**Why this one:** [2–3 sentences: why this has high learning impact and is worth building]
+
+**Architecture direction:** [One of: Socratic Partner | Steelman Partner | Worked Example Fader | Retrieval Practice Loop | Analogical Transfer | Multi-Agent Simulation]
+
+**Complexity:** [LOW / MEDIUM / HIGH] — [one sentence on what drives the complexity]
+
+**Prototype feasibility:** [YES — buildable in a Claude Project | CONDITIONAL — needs X to work | NO — requires external infrastructure]
+
+**Success signal:** [What would a 15-minute test session show if this is working?]
+
+**Professor pitch:** [One sentence: how you’d describe this to the faculty member in plain language without AI jargon]
+
 ---
 
 After all use cases:
 
-DROPPED USE CASES: List any STRONG or MODERATE flags that were deprioritized, with a one-line reason.
+### Dropped Use Cases
+[List any STRONG or MODERATE flags that were deprioritized, with a one-line reason each.]
 
-MEETING ORDER: Suggest the sequence to present these to the professor, with rationale. (Rule of thumb: lead with the most legible win, save the most ambitious for last.)
+### Suggested Meeting Order
+[Sequence to present these to the professor, with rationale. Rule of thumb: lead with the most legible win, save the most ambitious for last.]
