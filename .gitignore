@@ -1,0 +1,5 @@
+.streamlit/secrets.toml
+.friction_hunter_session.json
+__pycache__/
+*.pyc
+.env
