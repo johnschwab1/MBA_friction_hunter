@@ -608,12 +608,15 @@ elif st.session_state.stage >= 2:
                 )
                 col1, col2, col3 = st.columns([2, 2, 2])
                 with col1:
-                    if st.button("↺ Re-run with this direction", disabled=not direction_input.strip()):
-                        st.session_state.stage3_direction = direction_input.strip()
-                        st.session_state.stage3_examples = ""
-                        del outputs[3]
-                        save_session()
-                        st.rerun()
+                    if st.button("↺ Re-run with this direction"):
+                        if not direction_input.strip():
+                            st.warning("Please type some direction above first.")
+                        else:
+                            st.session_state.stage3_direction = direction_input.strip()
+                            st.session_state.stage3_examples = ""
+                            del outputs[3]
+                            save_session()
+                            st.rerun()
                 with col2:
                     if st.button("✓ Satisfied — Choose use cases →", type="primary"):
                         with st.spinner("Extracting use cases…"):
