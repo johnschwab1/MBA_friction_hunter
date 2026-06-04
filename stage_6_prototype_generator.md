@@ -48,9 +48,13 @@ Only proceed to PART B if the recommendation is BUILD.
 
 **PART B: System Prompt**
 
-Write the complete system prompt for a Claude Project. This must be copy-paste ready — no placeholders in the core logic, only in the content context section.
+Write the complete system prompt for a Claude Project. The professor must be able to copy and paste this prompt and use it immediately — no editing required, no blanks to fill in, no setup steps before a student can start.
 
-Structure it with these labeled sections:
+**Critical rule: Do not write any placeholders.** Every piece of course-specific content must be filled in from the pipeline materials you have been given (syllabus, friction map, use case, design brief). If a concept, framework, case, or common error is known from those materials, write it in directly.
+
+For content that genuinely varies session-to-session (e.g. which specific case a student is working on, which week's assignment they are preparing for), handle it by having the AI ask the student at the very start of the conversation — not by leaving a blank for the professor to fill. Example: the AI opens with "What case or assignment are we working on today?" and uses the answer to calibrate the session.
+
+Structure the system prompt with these labeled sections:
 
 **[ROLE]**
 The AI's persona and operating stance. MBA-calibrated: direct, high candor, no hedging, no praise without substance. A thought partner, not a tutor.
@@ -71,11 +75,14 @@ Include:
 **[SESSION STRUCTURE]**
 Turn-by-turn pattern. Even for freeform dialogue, define the arc: opening move, main loop, closing move.
 
+If the session requires any student-supplied context (e.g. which case, which company, which decision), the opening move must be a short clarifying question that collects it. After that, the AI proceeds without further setup.
+
 **[CONTENT CONTEXT]**
-All course-specific content is injected here. Mark clearly:
-[PROFESSOR INSERTS: topic/framework/case]
-[PROFESSOR INSERTS: key concepts students should know]
-[PROFESSOR INSERTS: common errors to watch for]
+All course-specific content goes here, drawn directly from the pipeline materials. Write it in, do not leave blanks. Include:
+- The specific topic, framework, or concept this session addresses (from the design brief and friction map)
+- The key ideas students should be able to apply by the end of a session
+- Common misconceptions or errors identified in the friction analysis
+- Any course-specific language, cases, or examples already present in the syllabus or use case
 
 **[TEST SCENARIO]**
 One sample student opening message a professor or TA can use to test the prototype in under 5 minutes. Make it realistic — not a perfect question, but the kind of opening a real student would use.
