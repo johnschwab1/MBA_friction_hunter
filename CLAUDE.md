@@ -1,19 +1,19 @@
-# CLAUDE.md — MBA Friction Hunter
+# CLAUDE.md — Learning Breakthrough Workshop Builder
 
 ## What This Project Is
-An 8-stage AI pipeline that analyzes MBA syllabi to find where AI creates
-genuine learning value, then generates working prototype prompts professors
-can paste directly into Claude/Gemini/ChatGPT. Built in Streamlit, deployed
-via GitHub Codespaces.
+An 8-stage AI pipeline that takes any curriculum artifact and finds where
+students get stuck, then builds AI-facilitated workshops to get them unstuck.
+Works for any subject, any audience — not limited to higher education.
+Built in Streamlit, deployed via GitHub Codespaces.
 
 ## Pipeline Architecture
 - Stage 1: Criteria layer (reference doc, not run directly)
-- Stage 2: Friction Hunter — analyzes syllabus for AI intervention points
-- Stage 3: Use Case Selector — approval loop, professor gives direction
+- Stage 2: Friction Hunter — analyzes curriculum for AI intervention points
+- Stage 3: Use Case Selector — approval loop, instructor gives direction
 - Stage 4: Architecture Hunter — finds 3 research frameworks per use case
 - Stage 5: Design Brief — full brief per use case
 - Stage 6: Prototype Generator — paste-ready prompt, no placeholders
-- Stage 7: Professor Brief — leave-behind document, 1-3 use cases
+- Stage 7: Instructor Brief — leave-behind document, 1-3 use cases
 - Stage 8: Reference Document — internal working doc for analyst/Claude Code
 
 Stages 4-6 run automatically per selected use case after Stage 3 approval.
@@ -64,11 +64,10 @@ Output format must use:
   extras if not explicitly instructed to cover every one
 
 ## What This Tool Actually Does
-It finds where students are struggling to learn — not because the material
-is hard, but because the course structure can't provide enough practice reps,
-fast enough feedback, or content connected to their own context. It then
-builds AI-facilitated workshops for those moments — not tools that do
-student work, but tools that teach.
+Finds where students get stuck on any subject, and builds the AI workshop
+to get them unstuck. Not tools that do student work — tools that teach.
+Works across any domain: higher education, corporate training, professional
+development, bootcamps.
 
 ## Audit Note
 Review and trim this file periodically. Remove rules that no longer apply.
